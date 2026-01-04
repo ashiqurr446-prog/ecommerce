@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register</title>
+  <link rel="stylesheet" href="css/auth.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+
+<body>
+<div id="navbar-placeholder"></div>
+    <div class="auth-container">
+         <h1>Register</h1>
+
+  <form id="register-form">
+  <input type="text" name="username" placeholder="Username" required /><br /><br />
+  <input type="email" name="email" placeholder="Email" required /><br /><br />
+  <input type="password" name="password" placeholder="Password" required /><br /><br />
+  
+  <select name="role" id="roleSelect" required>
+    <option value="">Select Role</option>
+    <option value="buyer">Buyer</option>
+    <option value="seller">Seller</option>
+    
+  </select>
+  <br /><br />
+
+  <input type="text" name="shopName" id="shopNameInput" placeholder="Shop Name (for sellers only)" style="display:none;" /><br /><br />
+
+  <button type="submit">Register</button>
+</form>
+
+  <p>Already registered?</p>
+  <button onclick="window.location.href='login.html'">Log In</button>
+
+  <p id="message"></p>
+    </div>
+
+ <script src="scripts/config.js"></script>
+  <script>
+    // Show/hide shop name field based on selected role
+    document.getElementById('roleSelect').addEventListener('change', (e) => {
+      const shopNameInput = document.getElementById('shopNameInput');
+      if (e.target.value === 'seller') {
+        shopNameInput.style.display = 'inline-block';
+        shopNameInput.required = true;
+      } else {
+        shopNameInput.style.display = 'none';
+        shopNameInput.required = false;
+        shopNameInput.value = '';
+      }
+    });
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const form = e.target;
+      const username = form.username.value.trim();
+      const email = form.email.value.trim();
+      const password = form.password.value;
+      const role = form.role.value;
+      const shopName = form.shopName.value.trim();
+
+      if (role === 'seller' && !shopName) {
+        document.getElementById('message').style.color = 'red';
+        document.getElementById('message').textContent = 'Shop name is required for sellers';
+        return;
+      }
+
+      try {
+        const res = await fetch(API_BASE + '/api/users/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password, role, shopName }),
+        });
+
+        const data = await res.json();
+        const msg = document.getElementById('message');
+
+        if (res.ok) {
+          msg.style.color = 'green';
+          msg.textContent = data.message || 'Registered successfully! You can now login.';
+          form.reset();
+          document.getElementById('shopNameInput').style.display = 'none';
+         
+          setTimeout(() => window.location.href = 'login.html', 2000);
+        } else {
+          msg.style.color = 'red';
+
+if (data.error === 'Email already in use') {
+  msg.innerHTML = 'Email already registered. <a href="login.html">Click here to log in</a>.';
+} else {
+  msg.textContent = data.error || (data.details ? data.details.join(', ') : 'Registration failed');
+}
+
+        }
+      } catch (err) {
+        console.error('Registration error:', err);
+        document.getElementById('message').style.color = 'red';
+        document.getElementById('message').textContent = 'Network error. Please try again.';
+      }
+    });
+  </script>
+   <script src="scripts/navbarLoader.js"></script>
+</body>
+</html>
