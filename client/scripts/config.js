@@ -1,11 +1,9 @@
 // config.js - Centralized API configuration
-// Change this to switch between localhost and production
+// Automatically detect environment: localhost for development, production URL for deployed
 
-// For local development:
-const API_BASE = 'http://localhost:5000';
-
-// For production (Render.com):
-// const API_BASE = 'https://ecommerce-server-cq95.onrender.com';
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:5000'
+  : `${window.location.protocol}//${window.location.hostname}:${window.location.port || ''}`.replace(':$', '');
 
 // Export for use in other scripts
 if (typeof module !== 'undefined' && module.exports) {
