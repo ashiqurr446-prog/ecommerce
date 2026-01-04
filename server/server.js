@@ -27,19 +27,20 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 
-// Determine correct client path (works with both Root Directory settings)
-const clientPath = __dirname.endsWith('server') 
-  ? path.join(__dirname, '../client')
-  : path.join(__dirname, 'client');
+// Determine correct client path
+// In local dev: __dirname = .../server, so go up to root, then into client
+// In Render: code runs from server dir, so we need to resolve from project root
+const clientPath = path.join(__dirname, '..', 'client');
+const absoluteClientPath = path.resolve(clientPath);
 
-console.log(`📁 Client path: ${clientPath}`);
+console.log(`📁 Client path: ${absoluteClientPath}`);
 
 // Static file serving
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use(express.static(clientPath));
+app.use(express.static(absoluteClientPath));
 
 app.get('/', (req, res) => {
-  const homeFile = path.join(clientPath, 'home.html');
+  const homeFile = path.join(absoluteClientPath, 'home.html');
   console.log(`🏠 Serving home from: ${homeFile}`);
   res.sendFile(homeFile, (err) => {
     if (err) {
