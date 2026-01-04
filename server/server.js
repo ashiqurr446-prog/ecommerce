@@ -27,13 +27,26 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 
+// Determine correct client path (works with both Root Directory settings)
+const clientPath = __dirname.endsWith('server') 
+  ? path.join(__dirname, '../client')
+  : path.join(__dirname, 'client');
+
+console.log(`📁 Client path: ${clientPath}`);
+
 // Static file serving
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use(express.static(path.join(__dirname, '../client')));
-
+app.use(express.static(clientPath));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/home.html'));
+  const homeFile = path.join(clientPath, 'home.html');
+  console.log(`🏠 Serving home from: ${homeFile}`);
+  res.sendFile(homeFile, (err) => {
+    if (err) {
+      console.error(`❌ Failed to serve home.html: ${err.message}`);
+      res.status(404).send('home.html not found');
+    }
+  });
 });
 
 // Connect to MongoDB with enhanced options and error handling
