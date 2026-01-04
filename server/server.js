@@ -28,11 +28,14 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 
 // Determine correct client path
-// In local dev: __dirname = .../server, so go up to root, then into client
-// In Render: code runs from server dir, so we need to resolve from project root
-const clientPath = path.join(__dirname, '..', 'client');
-const absoluteClientPath = path.resolve(clientPath);
+// When run via 'cd server && npm start', we need to use process.cwd() to get actual working dir
+// __dirname is always .../server, but cwd() reflects where npm start was run from
+const projectRoot = process.cwd().endsWith('server') 
+  ? path.dirname(process.cwd()) 
+  : process.cwd();
+const absoluteClientPath = path.resolve(projectRoot, 'client');
 
+console.log(`📁 Project root: ${projectRoot}`);
 console.log(`📁 Client path: ${absoluteClientPath}`);
 
 // Static file serving
