@@ -1,0 +1,36 @@
+{
+  "name": "ecommerce-app",
+  "description": "Full-stack ecommerce application with Node.js, Express, and MongoDB",
+  "buildCommand": "npm install",
+  "startCommand": "npm start",
+  "env": {
+    "NODE_ENV": {
+      "description": "Node environment",
+      "value": "production"
+    },
+    "MONGO_URI": {
+      "description": "MongoDB connection string from MongoDB Atlas",
+      "required": true
+    },
+    "JWT_SECRET": {
+      "description": "Secret key for JWT authentication (use crypto to generate)",
+      "required": true
+    },
+    "PORT": {
+      "description": "Server port",
+      "value": "5000"
+    },
+    "CLOUDINARY_CLOUD_NAME": {
+      "description": "Cloudinary cloud name for image uploads (optional)",
+      "required": false
+    },
+    "CLOUDINARY_API_KEY": {
+      "description": "Cloudinary API key (optional)",
+      "required": false
+    },
+    "CLOUDINARY_API_SECRET": {
+      "description": "Cloudinary API secret (optional)",
+      "required": false
+    }
+  }
+}
