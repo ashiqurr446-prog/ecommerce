@@ -1,8 +1,9 @@
 {
   "name": "ecommerce-app",
   "description": "Full-stack ecommerce application with Node.js, Express, and MongoDB",
-  "buildCommand": "npm install",
-  "startCommand": "npm start",
+  "buildCommand": "cd server && npm install",
+  "startCommand": "cd server && npm start",
+  "rootDir": ".",
   "env": {
     "NODE_ENV": {
       "description": "Node environment",
